@@ -7,7 +7,7 @@ Rust DSP + ML audio cleanup engine. All processing is local-only.
 The baseline DSP pipeline is implemented in `vinyl_engine::run_baseline_pipeline` and follows:
 
 1. **Normalize** input to a target peak.
-2. **Impulse detection** using an adaptive threshold and sample-to-sample delta check.
+2. **Impulse detection** using adaptive threshold with local contrast gating combining absolute level, sample-to-sample delta, and neighbor comparisons.
 3. **Repair** by interpolating across detected impulses.
 4. **Validate** output for clipping and NaNs.
 
