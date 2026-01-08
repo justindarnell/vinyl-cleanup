@@ -84,7 +84,7 @@ pub fn click_precision_recall(
 ///
 /// # Parameters
 /// - `original`: The original input signal before repair.
-/// - `repaired`: The signal after impulse repair/removal.
+/// - `repaired`: The signal after impulse repair/removal. **Must have the same length as `original`**.
 /// - `transient_regions`: List of `(start, end)` index pairs defining regions
 ///   containing important transients that should be preserved. Indices are clamped
 ///   to the valid range `[0, original.len())`.
@@ -100,6 +100,10 @@ pub fn click_precision_recall(
 /// - If `transient_regions` is empty, returns 1.0 (no transients to preserve).
 /// - If the original signal has zero energy in the transient regions, returns 1.0.
 ///
+/// # Panics
+/// Panics if `repaired.len()` is less than `original.len()`, as this would cause out-of-bounds
+/// access when iterating through transient regions.
+///
 /// # Implementation Note
 /// The score is computed as `1.0 - (squared_error / original_energy)`, where
 /// `squared_error` is the sum of squared differences between original and repaired
@@ -113,6 +117,15 @@ pub fn transient_preservation(
     if transient_regions.is_empty() {
         return 1.0;
     }
+
+    // Validate that repaired has at least as many samples as original to prevent
+    // out-of-bounds access in the loop below.
+    assert!(
+        repaired.len() >= original.len(),
+        "repaired signal must have at least as many samples as original (repaired: {}, original: {})",
+        repaired.len(),
+        original.len()
+    );
 
     let mut squared_error = 0.0_f32;
     let mut original_energy = 0.0_f32;
