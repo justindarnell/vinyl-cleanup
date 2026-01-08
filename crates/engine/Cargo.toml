@@ -1,0 +1,10 @@
+[package]
+name = "vinyl-engine"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "vinyl_engine"
+path = "src/lib.rs"
+
+[dependencies]
