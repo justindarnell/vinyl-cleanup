@@ -84,6 +84,26 @@ Provide a consumer-friendly application that cleans vinyl transfers by removing 
 - Keyboard shortcuts for play/pause, toggle before/after.
 - Clear labels and tooltips (non-technical language).
 
+### 5.4 MVP Checklist (Derived from Sections 4–5)
+- **Import:** Load WAV/AIFF/FLAC/MP3 and render waveform + spectrogram.
+- **Clean:** One-click “Clean” triggers automatic click/pop/crackle removal.
+- **Preview:** Before/after toggle or slider for A/B comparison with playback.
+- **Export:** Save cleaned audio to WAV/FLAC/AIFF/MP3 with metadata preservation.
+- **Cleanliness Indicator:** Display a simple confidence meter (e.g., Good/Great/Excellent).
+
+### 5.5 UI Scope: Must-Have vs Later
+**Must-Have (MVP)**
+- Waveform + spectrogram view.
+- Clean button (primary CTA).
+- Before/after toggle or A/B slider.
+- Export button.
+- Cleanliness meter (basic indicator).
+
+**Later (Post-MVP)**
+- Expert Mode controls (aggressiveness, preserve transients).
+- Visual click markers.
+- Batch processing and track splitting.
+
 ## 6. Processing Pipeline Requirements
 
 ### 6.1 Typical Pipeline (Suggested)
@@ -101,6 +121,15 @@ Provide a consumer-friendly application that cleans vinyl transfers by removing 
 ### 6.2 Performance Targets
 - Real-time playback after cleaning for files < 60 minutes.
 - Cleaning time: **< 2x file duration** on standard consumer hardware.
+
+### 6.3 Acceptance Criteria (Measurable)
+**Performance**
+- Full-file cleaning completes in **< 2x file duration** on standard consumer hardware.
+- UI remains responsive during processing; preview/playback available after cleaning for files < 60 minutes.
+
+**Audio Quality**
+- On an agreed internal test set of vinyl rips, **no audible artifacts** (warbling/metallic ringing/dulling) are introduced in A/B listening by at least two reviewers.
+- Dynamic range and transient detail are preserved relative to the source (no clipping introduced).
 
 ## 7. Quality Requirements
 
