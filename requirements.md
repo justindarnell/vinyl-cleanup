@@ -44,7 +44,7 @@ Provide a consumer-friendly application that cleans vinyl transfers by removing 
 - **Target quality:** Audible improvement with minimal artifacts on 90% of typical vinyl rips.
 
 ### 4.2.1 ML-Assisted Detection (Required When It Improves Outcomes)
-- **ML model usage is mandatory** only if it measurably improves cleanup quality versus a DSP-only baseline.
+- **ML models should be used only when** they measurably improve cleanup quality versus a DSP-only baseline.
 - **Evaluation criteria:** Improved click/pop recall and precision while preserving transients (no added artifacts).
 - **Local inference only:** No network calls during processing.
 - **Fallback:** If ML fails quality thresholds, the system must revert to the DSP-only pipeline.
