@@ -19,7 +19,7 @@
 
 ## Development notes
 - All processing is **local by default**; no network calls in the audio engine.
-- The ML model is required **only if** it demonstrates superior quality vs DSP-only on agreed metrics.
+- The ML model should be used **only if** it demonstrates superior quality vs DSP-only on agreed metrics.
 - Keep UI controls minimal; expert options are hidden by default.
 
 ## Suggested commands (once implemented)
