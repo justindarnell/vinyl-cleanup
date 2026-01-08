@@ -27,6 +27,9 @@ jobs:
         if: ${{ hashFiles('**/Cargo.toml') != '' }}
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Cache Rust dependencies
+        if: ${{ hashFiles('**/Cargo.toml') != '' }}
+        uses: Swatinem/rust-cache@v2
       - name: Install JS dependencies
         if: ${{ hashFiles('**/package.json') != '' }}
         run: pnpm install
