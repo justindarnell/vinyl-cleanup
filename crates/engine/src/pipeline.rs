@@ -275,9 +275,14 @@ fn repair_impulses(input: &[f32], impulses: &[usize]) -> Vec<f32> {
         let right_value = input[right_index];
         let span = (right_index - left_index) as f32;
 
-        for (offset, index) in (left_index + 1..=right_index - 1).enumerate() {
-            let t = (offset + 1) as f32 / span;
-            repaired[index] = left_value + (right_value - left_value) * t;
+        // Guard against edge case where right_index <= left_index, which would cause
+        // right_index - 1 to underflow in the range expression below. This can occur
+        // when repairing impulses at signal boundaries in very short signals.
+        if right_index > left_index + 1 {
+            for (offset, index) in (left_index + 1..=right_index - 1).enumerate() {
+                let t = (offset + 1) as f32 / span;
+                repaired[index] = left_value + (right_value - left_value) * t;
+            }
         }
 
         start = end + 1;
