@@ -122,7 +122,7 @@ pub fn transient_preservation(
     // out-of-bounds access in the loop below.
     assert!(
         repaired.len() >= original.len(),
-        "repaired signal must have at least as many samples as original (repaired: {}, original: {})",
+        "repaired signal length ({}) must be at least as long as original signal length ({})",
         repaired.len(),
         original.len()
     );
