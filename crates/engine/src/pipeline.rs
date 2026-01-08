@@ -186,6 +186,8 @@ fn detect_impulses(input: &[f32], config: &BaselineConfig) -> Vec<usize> {
         let diff = (sample - prev).abs();
         let local_mean = (prev.abs() + next.abs()) * 0.5;
         let abs = sample.abs();
+        // Note: threshold already incorporates impulse_abs_min via the max() on line 175,
+        // so checking abs >= threshold implicitly enforces the minimum absolute value requirement.
         if abs >= threshold
             && diff >= config.diff_threshold
             && abs >= local_mean * 2.5
