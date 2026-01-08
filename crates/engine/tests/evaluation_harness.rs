@@ -46,6 +46,76 @@ fn generate_corpus() -> Vec<TestClip> {
         transients: vec![(900, 980)],
     });
 
+    // Edge case: Empty signal
+    clips.push(TestClip {
+        name: "empty_signal",
+        samples: Vec::new(),
+        impulses: Vec::new(),
+        transients: Vec::new(),
+    });
+
+    // Edge case: Single sample signal (len < 3, no detection possible)
+    clips.push(TestClip {
+        name: "single_sample",
+        samples: vec![0.5],
+        impulses: Vec::new(),
+        transients: Vec::new(),
+    });
+
+    // Edge case: Two sample signal (len < 3, no detection possible)
+    clips.push(TestClip {
+        name: "two_samples",
+        samples: vec![0.3, 0.8],
+        impulses: Vec::new(),
+        transients: Vec::new(),
+    });
+
+    // Edge case: All-zero signal
+    clips.push(TestClip {
+        name: "all_zero",
+        samples: vec![0.0; 512],
+        impulses: Vec::new(),
+        transients: Vec::new(),
+    });
+
+    // Edge case: Near-zero amplitude signal
+    clips.push(TestClip {
+        name: "near_zero",
+        samples: vec![0.001; 512],
+        impulses: Vec::new(),
+        transients: Vec::new(),
+    });
+
+    // Edge case: Consecutive impulses (Note: neighbor-based detection cannot detect
+    // all samples in a consecutive run, only peaks. This test validates graceful handling)
+    let mut consecutive_impulses_signal = vec![0.15; 512];
+    // Create impulse groups where the middle one is highest (detectable as local peak)
+    consecutive_impulses_signal[99] = 0.3;
+    consecutive_impulses_signal[100] = 3.0; // This peak should be detected
+    consecutive_impulses_signal[101] = 0.3;
+    consecutive_impulses_signal[199] = 0.3;
+    consecutive_impulses_signal[200] = 3.0; // This peak should be detected
+    consecutive_impulses_signal[201] = 0.3;
+    clips.push(TestClip {
+        name: "consecutive_impulses",
+        samples: consecutive_impulses_signal,
+        impulses: vec![100, 200], // Only the peaks of each group
+        transients: Vec::new(),
+    });
+
+    // Edge case: Impulses near edges (but not at index 0 or len-1, which cannot be detected)
+    let mut edge_impulses_signal = vec![0.15; 512];
+    let impulses = vec![1, 3, 508, 510]; // Near start and end, but detectable and non-consecutive
+    for &index in &impulses {
+        edge_impulses_signal[index] = 3.0; // Larger spike to ensure detection
+    }
+    clips.push(TestClip {
+        name: "impulses_near_edges",
+        samples: edge_impulses_signal,
+        impulses,
+        transients: Vec::new(),
+    });
+
     clips
 }
 

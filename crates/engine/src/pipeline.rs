@@ -34,6 +34,14 @@ pub struct BaselineConfig {
     /// sensitivity to small, rapid changes; decreasing it makes detection more
     /// sensitive.
     pub diff_threshold: f32,
+    /// Local contrast multiplier for impulse detection.
+    ///
+    /// A sample must be at least `local_contrast_multiplier` times larger than the
+    /// mean of its immediate neighbors' absolute values to be considered an impulse.
+    /// This helps reject normal signal variation and transient content while detecting
+    /// true impulsive clicks. Higher values reduce false positives but may miss
+    /// smaller clicks; lower values increase sensitivity but may flag normal transients.
+    pub local_contrast_multiplier: f32,
 }
 
 impl Default for BaselineConfig {
@@ -43,6 +51,7 @@ impl Default for BaselineConfig {
             impulse_threshold_multiplier: 6.0,
             impulse_abs_min: 0.25,
             diff_threshold: 0.2,
+            local_contrast_multiplier: 2.5,
         }
     }
 }
@@ -178,8 +187,8 @@ fn normalize(input: &[f32], target_peak: f32) -> Vec<f32> {
 /// # Limitations
 /// **Edge samples are excluded from detection**: The algorithm requires access to both
 /// previous and next samples for neighbor-based checks, so impulses at the first sample
-/// (index 0) or last sample (index `len - 1`) cannot be detected. Only indices in the
-/// range `[1, len - 2]` are candidates for impulse detection.
+/// (index 0) or last sample (index `len - 1`) cannot be detected. Only indices from
+/// `1` to `len - 2`, inclusive, are candidates for impulse detection.
 ///
 /// # Parameters
 /// - `input`: The signal to analyze for impulses.
@@ -210,13 +219,9 @@ fn detect_impulses(input: &[f32], config: &BaselineConfig) -> Vec<usize> {
         // The threshold is the larger of the adaptive threshold (mean_abs * impulse_threshold_multiplier)
         // and the minimum absolute threshold (impulse_abs_min), ensuring detection is robust to both
         // low-level signals and noise.
-        // The local contrast multiplier (2.5) requires the sample to be significantly larger
-        // than its immediate neighbors to qualify as an impulse, reducing false positives from
-        // normal signal variation. This value was empirically chosen to balance sensitivity
-        // to actual clicks while rejecting normal transient content.
         if abs >= threshold
             && diff >= config.diff_threshold
-            && abs >= local_mean * 2.5
+            && abs >= local_mean * config.local_contrast_multiplier
             && abs >= prev.abs()
             && abs >= next.abs()
         {
@@ -227,6 +232,27 @@ fn detect_impulses(input: &[f32], config: &BaselineConfig) -> Vec<usize> {
     impulses
 }
 
+/// Repairs detected impulses by interpolating over them using surrounding samples.
+///
+/// This function replaces impulse samples with interpolated values based on the nearest
+/// non-impulse samples on either side. Consecutive impulses are grouped together and
+/// treated as a single region to repair.
+///
+/// # Parameters
+/// - `input`: The signal containing impulses to repair.
+/// - `impulses`: Indices of samples identified as impulses. **This vector will be sorted
+///   internally**, so the order of indices in the input is not preserved.
+///
+/// # Returns
+/// A new signal with impulses replaced by linear interpolation between the nearest
+/// non-impulse samples on either side of each impulse or impulse group.
+///
+/// # Implementation Details
+/// - Consecutive impulses are grouped into regions and repaired as a unit.
+/// - Interpolation uses linear blending between the samples immediately before and after
+///   each impulse region.
+/// - The function handles edge cases where impulses are near the signal boundaries by
+///   using `saturating_sub` and `min` to clamp indices.
 fn repair_impulses(input: &[f32], impulses: &[usize]) -> Vec<f32> {
     if impulses.is_empty() {
         return input.to_vec();
@@ -249,7 +275,10 @@ fn repair_impulses(input: &[f32], impulses: &[usize]) -> Vec<f32> {
         let right_value = input[right_index];
         let span = (right_index - left_index) as f32;
 
-        if span != 0.0 {
+        // Guard against edge case where right_index <= left_index, which would cause
+        // right_index - 1 to underflow in the range expression below. This can occur
+        // when repairing impulses at signal boundaries in very short signals.
+        if right_index > left_index + 1 {
             for (offset, index) in (left_index + 1..=right_index - 1).enumerate() {
                 let t = (offset + 1) as f32 / span;
                 repaired[index] = left_value + (right_value - left_value) * t;
