@@ -43,6 +43,12 @@ Provide a consumer-friendly application that cleans vinyl transfers by removing 
 - **Music preservation:** Must not alter pitch/timbre significantly.
 - **Target quality:** Audible improvement with minimal artifacts on 90% of typical vinyl rips.
 
+### 4.2.1 ML-Assisted Detection (Required When It Improves Outcomes)
+- **ML model usage is mandatory** only if it measurably improves cleanup quality versus a DSP-only baseline.
+- **Evaluation criteria:** Improved click/pop recall and precision while preserving transients (no added artifacts).
+- **Local inference only:** No network calls during processing.
+- **Fallback:** If ML fails quality thresholds, the system must revert to the DSP-only pipeline.
+
 ### 4.3 Intelligent Processing
 - **Auto-sensitivity adaptation** based on audio characteristics (genre, loudness, noise profile).
 - **Confidence scoring:** Internal quality confidence shown as “Cleanliness meter.”

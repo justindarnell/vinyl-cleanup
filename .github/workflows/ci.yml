@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        if: ${{ hashFiles('**/package.json') != '' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "npm"
+
+      - name: Set up Rust
+        if: ${{ hashFiles('**/Cargo.toml') != '' }}
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install JS dependencies
+        if: ${{ hashFiles('**/package.json') != '' }}
+        run: npm install
+
+      - name: Build JS app
+        if: ${{ hashFiles('**/package.json') != '' }}
+        run: npm run build --if-present
+
+      - name: Build Rust crates
+        if: ${{ hashFiles('**/Cargo.toml') != '' }}
+        run: cargo build --workspace --locked
+
+      - name: Skip build (no project files yet)
+        if: ${{ hashFiles('**/package.json') == '' && hashFiles('**/Cargo.toml') == '' }}
+        run: echo "No build targets detected yet."
