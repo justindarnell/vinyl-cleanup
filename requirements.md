@@ -123,9 +123,6 @@ Provide a consumer-friendly application that cleans vinyl transfers by removing 
 - Cleaning time: **< 2x file duration** on standard consumer hardware.
 
 ### 6.3 Acceptance Criteria (Measurable)
-**Performance**
-- Full-file cleaning completes in **< 2x file duration** on standard consumer hardware.
-- UI remains responsive during processing; preview/playback available after cleaning for files < 60 minutes.
 
 **Audio Quality**
 - On an agreed internal test set of vinyl rips, **no audible artifacts** (warbling/metallic ringing/dulling) are introduced in A/B listening by at least two reviewers.
