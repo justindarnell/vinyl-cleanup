@@ -37,7 +37,7 @@ jobs:
 
       - name: Build Rust crates
         if: ${{ hashFiles('**/Cargo.toml') != '' }}
-        run: cargo build --workspace --locked
+        run: cargo build --workspace
 
       - name: Skip build (no project files yet)
         if: ${{ hashFiles('**/package.json') == '' && hashFiles('**/Cargo.toml') == '' }}
