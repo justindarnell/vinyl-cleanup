@@ -17,7 +17,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "lts/*"
-          cache: "npm"
+          cache: "pnpm"
+
+      - name: Enable pnpm via Corepack
+        if: ${{ hashFiles('**/package.json') != '' }}
+        run: corepack enable
 
       - name: Set up Rust
         if: ${{ hashFiles('**/Cargo.toml') != '' }}
@@ -25,11 +29,11 @@ jobs:
 
       - name: Install JS dependencies
         if: ${{ hashFiles('**/package.json') != '' }}
-        run: npm install
+        run: pnpm install
 
       - name: Build JS app
         if: ${{ hashFiles('**/package.json') != '' }}
-        run: npm run build --if-present
+        run: pnpm run build --if-present
 
       - name: Build Rust crates
         if: ${{ hashFiles('**/Cargo.toml') != '' }}
