@@ -52,7 +52,7 @@ impl Default for BaselineConfig {
 ///
 /// This is typically produced by [`validate_output`] and attached to
 /// [`BaselineOutput::validation`] so that callers can verify that the
-/// resulting signal is numerically well‑behaved.
+/// resulting signal is numerically well-behaved.
 pub struct ValidationResult {
     /// Maximum absolute sample value observed in the validated buffer.
     ///
@@ -60,9 +60,9 @@ pub struct ValidationResult {
     /// and that the signal stays within the desired peak range.
     pub peak: f32,
     /// Number of samples whose absolute value exceeded the nominal
-    /// full‑scale range, typically `[-1.0, 1.0]`.
+    /// full-scale range, typically `[-1.0, 1.0]`.
     ///
-    /// A non‑zero value indicates that the signal clipped or would clip when
+    /// A non-zero value indicates that the signal clipped or would clip when
     /// rendered, which may cause audible distortion.
     pub clipped_samples: usize,
     /// Indicates whether any `NaN` values were detected in the buffer.
