@@ -166,6 +166,27 @@ fn normalize(input: &[f32], target_peak: f32) -> Vec<f32> {
     input.iter().map(|sample| sample * scale).collect()
 }
 
+/// Detects impulsive artifacts in the input signal using adaptive thresholding
+/// and local-contrast gating.
+///
+/// This function identifies samples that stand out as impulses based on:
+/// - Absolute amplitude exceeding an adaptive threshold
+/// - Sample-to-sample difference exceeding a minimum delta
+/// - Local contrast relative to neighboring samples
+/// - Being a local peak compared to immediate neighbors
+///
+/// # Limitations
+/// **Edge samples are excluded from detection**: The algorithm requires access to both
+/// previous and next samples for neighbor-based checks, so impulses at the first sample
+/// (index 0) or last sample (index `len - 1`) cannot be detected. Only indices in the
+/// range `[1, len - 2]` are candidates for impulse detection.
+///
+/// # Parameters
+/// - `input`: The signal to analyze for impulses.
+/// - `config`: Configuration controlling detection thresholds and sensitivity.
+///
+/// # Returns
+/// A vector of sample indices where impulses were detected, in ascending order.
 fn detect_impulses(input: &[f32], config: &BaselineConfig) -> Vec<usize> {
     if input.is_empty() {
         return Vec::new();
@@ -186,8 +207,13 @@ fn detect_impulses(input: &[f32], config: &BaselineConfig) -> Vec<usize> {
         let diff = (sample - prev).abs();
         let local_mean = (prev.abs() + next.abs()) * 0.5;
         let abs = sample.abs();
-        // Note: threshold already incorporates impulse_abs_min via the max() on line 175,
-        // so checking abs >= threshold implicitly enforces the minimum absolute value requirement.
+        // The threshold is the larger of the adaptive threshold (mean_abs * impulse_threshold_multiplier)
+        // and the minimum absolute threshold (impulse_abs_min), ensuring detection is robust to both
+        // low-level signals and noise.
+        // The local contrast multiplier (2.5) requires the sample to be significantly larger
+        // than its immediate neighbors to qualify as an impulse, reducing false positives from
+        // normal signal variation. This value was empirically chosen to balance sensitivity
+        // to actual clicks while rejecting normal transient content.
         if abs >= threshold
             && diff >= config.diff_threshold
             && abs >= local_mean * 2.5
