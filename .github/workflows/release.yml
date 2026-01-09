@@ -1,0 +1,48 @@
+name: Release (macOS)
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        if: ${{ hashFiles('**/package.json') != '' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "pnpm"
+
+      - name: Enable pnpm via Corepack
+        if: ${{ hashFiles('**/package.json') != '' }}
+        run: corepack enable
+
+      - name: Install JS dependencies
+        if: ${{ hashFiles('**/package.json') != '' }}
+        run: pnpm install
+
+      - name: Build JS app
+        if: ${{ hashFiles('**/package.json') != '' }}
+        run: pnpm --dir apps/desktop run build
+
+      - name: Archive desktop build
+        if: ${{ hashFiles('apps/desktop/dist/**') != '' }}
+        run: |
+          cd apps/desktop/dist
+          tar -czf ../../vinyl-cleanup-desktop-macos.tar.gz .
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.0.${{ github.run_number }}
+          name: macOS build v0.0.${{ github.run_number }}
+          files: |
+            vinyl-cleanup-desktop-macos.tar.gz
