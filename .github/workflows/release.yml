@@ -32,18 +32,23 @@ jobs:
         working-directory: apps/desktop
         run: pnpm install
 
-      - name: Build JS app
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build macOS app bundle
         if: ${{ hashFiles('apps/desktop/package.json') != '' }}
         working-directory: apps/desktop
-        run: pnpm run build
+        run: pnpm run tauri:build
 
-      - name: Archive desktop build
+      - name: Archive macOS app bundle
         run: |
-          if [ -d "apps/desktop/dist" ]; then
-            cd apps/desktop/dist
-            tar -czf ../../../vinyl-cleanup-desktop-macos.tar.gz .
+          bundle_dir="apps/desktop/src-tauri/target/release/bundle/macos"
+          shopt -s nullglob
+          apps=("${bundle_dir}"/*.app)
+          if [ ${#apps[@]} -gt 0 ]; then
+            tar -czf vinyl-cleanup-desktop-macos-app.tar.gz -C "${bundle_dir}" "$(basename "${apps[0]}")"
           else
-            echo "Build output missing at apps/desktop/dist"
+            echo "macOS app bundle missing in ${bundle_dir}"
             exit 1
           fi
 
@@ -53,4 +58,4 @@ jobs:
           tag_name: v0.0.${{ github.run_number }}
           name: macOS build v0.0.${{ github.run_number }}
           files: |
-            vinyl-cleanup-desktop-macos.tar.gz
+            vinyl-cleanup-desktop-macos-app.tar.gz
