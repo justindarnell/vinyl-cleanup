@@ -1,13 +1,15 @@
-name: CI
+name: Release (macOS)
 
 on:
   push:
     branches: ["main"]
-  pull_request:
+
+permissions:
+  contents: write
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  release:
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,14 +27,6 @@ jobs:
           version: "9.15.0"
           run_install: false
 
-      - name: Set up Rust
-        if: ${{ hashFiles('**/Cargo.toml') != '' }}
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Cache Rust dependencies
-        if: ${{ hashFiles('**/Cargo.toml') != '' }}
-        uses: Swatinem/rust-cache@v2
-
       - name: Install JS dependencies
         if: ${{ hashFiles('apps/desktop/package.json') != '' }}
         working-directory: apps/desktop
@@ -43,10 +37,20 @@ jobs:
         working-directory: apps/desktop
         run: pnpm run build
 
-      - name: Build Rust crates
-        if: ${{ hashFiles('**/Cargo.toml') != '' }}
-        run: cargo build --workspace
+      - name: Archive desktop build
+        run: |
+          if [ -d "apps/desktop/dist" ]; then
+            cd apps/desktop/dist
+            tar -czf ../../../vinyl-cleanup-desktop-macos.tar.gz .
+          else
+            echo "Build output missing at apps/desktop/dist"
+            exit 1
+          fi
 
-      - name: Skip build (no project files yet)
-        if: ${{ hashFiles('apps/desktop/package.json') == '' && hashFiles('**/Cargo.toml') == '' }}
-        run: echo "No build targets detected yet."
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.0.${{ github.run_number }}
+          name: macOS build v0.0.${{ github.run_number }}
+          files: |
+            vinyl-cleanup-desktop-macos.tar.gz
