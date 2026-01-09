@@ -1,0 +1,13 @@
+[package]
+name = "vinyl-cleanup-desktop"
+version = "0.1.0"
+edition = "2021"
+
+[build-dependencies]
+tauri-build = "1.6"
+
+[dependencies]
+tauri = { version = "1.6", features = ["shell-open", "dialog-all", "fs-all"] }
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
