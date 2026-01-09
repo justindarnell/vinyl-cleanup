@@ -27,13 +27,6 @@ jobs:
           version: "latest"
           run_install: false
 
-      - name: Enable pnpm cache
-        if: ${{ hashFiles('**/package.json') != '' }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: "lts/*"
-          cache: "pnpm"
-
       - name: Install JS dependencies
         if: ${{ hashFiles('**/package.json') != '' }}
         run: pnpm install
