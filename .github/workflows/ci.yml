@@ -32,6 +32,7 @@ jobs:
       - name: Cache Rust dependencies
         if: ${{ hashFiles('**/Cargo.toml') != '' }}
         uses: Swatinem/rust-cache@v2
+
       - name: Install JS dependencies
         if: ${{ hashFiles('apps/desktop/package.json') != '' }}
         working-directory: apps/desktop

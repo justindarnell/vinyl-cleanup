@@ -83,7 +83,7 @@ function App() {
                   <p className="label">Cleanup intensity</p>
                   <p className="value">Balanced</p>
                 </div>
-                <input aria-label="Cleanup intensity" defaultValue={60} type="range" />
+                <input aria-label="Cleanup intensity" defaultValue={60} min={0} max={100} type="range" />
               </div>
             </div>
             <div>
