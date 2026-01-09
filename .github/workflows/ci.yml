@@ -40,7 +40,7 @@ jobs:
       - name: Build JS app
         if: ${{ hashFiles('apps/desktop/package.json') != '' }}
         working-directory: apps/desktop
-        run: pnpm run build --if-present
+        run: pnpm run build
 
       - name: Build Rust crates
         if: ${{ hashFiles('**/Cargo.toml') != '' }}
