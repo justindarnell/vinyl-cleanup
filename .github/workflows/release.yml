@@ -41,7 +41,7 @@ jobs:
         run: |
           if [ -d "apps/desktop/dist" ]; then
             cd apps/desktop/dist
-            tar -czf ../../vinyl-cleanup-desktop-macos.tar.gz .
+            tar -czf ../../../vinyl-cleanup-desktop-macos.tar.gz .
           else
             echo "Build output missing at apps/desktop/dist"
             exit 1
