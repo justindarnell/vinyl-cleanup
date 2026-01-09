@@ -1,3 +1,17 @@
 # Desktop App
 
-Tauri desktop UI (React + TypeScript). This folder will host the front-end application and Tauri config.
+Tauri desktop UI (React + TypeScript).
+
+## Development
+
+```sh
+pnpm install
+pnpm tauri
+```
+
+## Build a macOS app bundle
+
+```sh
+pnpm install
+pnpm tauri:build
+```
