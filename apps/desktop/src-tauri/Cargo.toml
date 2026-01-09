@@ -7,7 +7,7 @@ edition = "2021"
 tauri-build = "1.6"
 
 [dependencies]
-tauri = { version = "1.6", features = [] }
+tauri = { version = "1.6", features = ["shell-open", "dialog-all", "fs-all"] }
 
 [features]
 custom-protocol = ["tauri/custom-protocol"]
