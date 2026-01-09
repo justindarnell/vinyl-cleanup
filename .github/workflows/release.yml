@@ -15,31 +15,37 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js
-        if: ${{ hashFiles('**/package.json') != '' }}
+        if: ${{ hashFiles('apps/desktop/package.json') != '' }}
         uses: actions/setup-node@v4
         with:
           node-version: "lts/*"
 
       - name: Set up pnpm
-        if: ${{ hashFiles('**/package.json') != '' }}
+        if: ${{ hashFiles('apps/desktop/package.json') != '' }}
         uses: pnpm/action-setup@v4
         with:
           version: "9.15.0"
           run_install: false
 
       - name: Install JS dependencies
-        if: ${{ hashFiles('**/package.json') != '' }}
+        if: ${{ hashFiles('apps/desktop/package.json') != '' }}
+        working-directory: apps/desktop
         run: pnpm install
 
       - name: Build JS app
-        if: ${{ hashFiles('**/package.json') != '' }}
-        run: pnpm --dir apps/desktop run build
+        if: ${{ hashFiles('apps/desktop/package.json') != '' }}
+        working-directory: apps/desktop
+        run: pnpm run build
 
       - name: Archive desktop build
-        if: ${{ hashFiles('apps/desktop/dist/**') != '' }}
         run: |
-          cd apps/desktop/dist
-          tar -czf ../../vinyl-cleanup-desktop-macos.tar.gz .
+          if [ -d "apps/desktop/dist" ]; then
+            cd apps/desktop/dist
+            tar -czf ../../vinyl-cleanup-desktop-macos.tar.gz .
+          else
+            echo "Build output missing at apps/desktop/dist"
+            exit 1
+          fi
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
