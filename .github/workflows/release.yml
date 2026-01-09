@@ -20,9 +20,19 @@ jobs:
         with:
           node-version: "lts/*"
 
-      - name: Enable pnpm via Corepack
+      - name: Set up pnpm
         if: ${{ hashFiles('**/package.json') != '' }}
-        run: corepack enable
+        uses: pnpm/action-setup@v4
+        with:
+          version: "latest"
+          run_install: false
+
+      - name: Enable pnpm cache
+        if: ${{ hashFiles('**/package.json') != '' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "pnpm"
 
       - name: Install JS dependencies
         if: ${{ hashFiles('**/package.json') != '' }}
