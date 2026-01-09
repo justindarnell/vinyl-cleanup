@@ -1,0 +1,283 @@
+.app {
+  padding: 48px 64px 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.app__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.app__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  color: #9aa7b7;
+  margin-bottom: 8px;
+}
+
+.app__subtext {
+  margin-top: 12px;
+  color: #b8c3d1;
+  max-width: 520px;
+}
+
+.app__status {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.app__status-label {
+  font-size: 0.8rem;
+  color: #8b98aa;
+}
+
+.app__status-value {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.app__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: #121826;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid rgba(148, 164, 184, 0.16);
+  box-shadow: 0 20px 45px rgba(5, 8, 13, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.card--drop {
+  grid-column: span 2;
+}
+
+.card--activity {
+  grid-column: span 2;
+}
+
+.card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: #b6c1d0;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pill--accent {
+  color: #0f1117;
+  background: #72f0c1;
+}
+
+.pill--muted {
+  color: #9aa7b7;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.dropzone {
+  border: 1px dashed rgba(150, 170, 190, 0.4);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  background: rgba(18, 27, 40, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dropzone__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.label {
+  font-size: 0.8rem;
+  color: #8b98aa;
+}
+
+.value {
+  font-weight: 600;
+}
+
+.control-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(148, 164, 184, 0.2);
+  color: #e6edf7;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.slider-row input[type="range"] {
+  flex: 1;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #c2ccda;
+}
+
+.toggle input {
+  accent-color: #72f0c1;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.metric {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid rgba(148, 164, 184, 0.12);
+}
+
+.metric__label {
+  font-size: 0.75rem;
+  color: #8b98aa;
+}
+
+.metric__value {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.metric__trend {
+  font-size: 0.75rem;
+  color: #72f0c1;
+}
+
+.waveform {
+  background: linear-gradient(90deg, rgba(114, 240, 193, 0.12), rgba(114, 240, 193, 0.02));
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.waveform__bars {
+  height: 70px;
+  background-image: repeating-linear-gradient(
+      90deg,
+      rgba(114, 240, 193, 0.9) 0,
+      rgba(114, 240, 193, 0.9) 4px,
+      transparent 4px,
+      transparent 10px
+    );
+  opacity: 0.7;
+}
+
+.waveform__label {
+  font-size: 0.8rem;
+  color: #c2ccda;
+  margin-top: 12px;
+}
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+  color: #c2ccda;
+}
+
+.advanced {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.app__primary,
+.app__secondary {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.app__primary {
+  background: #72f0c1;
+  color: #0f1117;
+}
+
+.app__primary--wide {
+  width: 100%;
+}
+
+.app__secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e6edf7;
+}
+
+summary {
+  cursor: pointer;
+  color: #b8c3d1;
+}
+
+@media (max-width: 900px) {
+  .app {
+    padding: 32px 24px 64px;
+  }
+
+  .app__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .app__status {
+    align-items: flex-start;
+  }
+
+  .card--drop,
+  .card--activity {
+    grid-column: span 1;
+  }
+}
