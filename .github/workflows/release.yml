@@ -19,7 +19,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "lts/*"
-          cache: "pnpm"
 
       - name: Enable pnpm via Corepack
         if: ${{ hashFiles('**/package.json') != '' }}
